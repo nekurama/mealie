@@ -1,0 +1,25 @@
+name: mavidi-mealie
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v3.31.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MEALIE_PORT:-9925}:9000"
+    volumes:
+      - data:/app/data
+    environment:
+      BASE_URL: ${MEALIE_BASE_URL:-http://localhost:9925}
+      ALLOW_SIGNUP: "false"
+      DB_ENGINE: sqlite
+      TZ: Asia/Kolkata
+      DEFAULT_GROUP: MaViDi
+      DEFAULT_HOUSEHOLD: MaViDi
+      TOKEN_TIME: "12"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9000/api/app/about"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+volumes:
+  data:
